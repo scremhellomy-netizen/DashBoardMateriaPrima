@@ -1,0 +1,69 @@
+{
+  "updatedAt": "2026-10-14T12:00:00-03:00",
+  "rows": [
+    {
+      "ID": "1001",
+      "Criado": "2026-10-01T08:30:00",
+      "ID ESCALA": "ESC-001",
+      "Nome Solicitante": "João da Silva",
+      "Processo Solicitacao": "VENDA",
+      "Quantidade": "140",
+      "Ação da Solicitação": "SEPARAÇÃO",
+      "Status Final": "PENDENTE",
+      "DATA DE ATEND ESTOQUE": "",
+      "DATA DE FINALIZAÇÃO": "",
+      "qtd atendida": "0",
+      "qtd separada": "0",
+      "Data de liberação": "2026-10-01T08:30:00",
+      "OBSERVACAO": "Dados de exemplo para funcionamento do dashboard"
+    },
+    {
+      "ID": "1002",
+      "Criado": "2026-10-02T09:10:00",
+      "ID ESCALA": "ESC-002",
+      "Nome Solicitante": "Maria Souza",
+      "Processo Solicitacao": "ELGISA",
+      "Quantidade": "88",
+      "Ação da Solicitação": "VALIDAÇÃO FÍSICA",
+      "Status Final": "FINALIZADO",
+      "DATA DE ATEND ESTOQUE": "2026-10-03T14:00:00",
+      "DATA DE FINALIZAÇÃO": "2026-10-03T18:00:00",
+      "qtd atendida": "88",
+      "qtd separada": "88",
+      "Data de liberação": "2026-10-02T11:00:00",
+      "OBSERVACAO": "Pedido finalizado"
+    },
+    {
+      "ID": "1003",
+      "Criado": "2026-10-05T13:25:00",
+      "ID ESCALA": "ESC-003",
+      "Nome Solicitante": "Carlos Pereira",
+      "Processo Solicitacao": "TROCA TÉCNICA",
+      "Quantidade": "200",
+      "Ação da Solicitação": "SEPARAÇÃO",
+      "Status Final": "EM ANDAMENTO",
+      "DATA DE ATEND ESTOQUE": "",
+      "DATA DE FINALIZAÇÃO": "",
+      "qtd atendida": "120",
+      "qtd separada": "120",
+      "Data de liberação": "2026-10-05T15:40:00",
+      "OBSERVACAO": "Pedido em andamento"
+    },
+    {
+      "ID": "1004",
+      "Criado": "2026-10-09T07:45:00",
+      "ID ESCALA": "ESC-004",
+      "Nome Solicitante": "Ana Costa",
+      "Processo Solicitacao": "REVISÃO MPS",
+      "Quantidade": "60",
+      "Ação da Solicitação": "VALIDAÇÃO FISICA",
+      "Status Final": "PENDENTE",
+      "DATA DE ATEND ESTOQUE": "",
+      "DATA DE FINALIZAÇÃO": "",
+      "qtd atendida": "0",
+      "qtd separada": "0",
+      "Data de liberação": "2026-10-09T10:05:00",
+      "OBSERVACAO": "Documento aguardando revisão"
+    }
+  ]
+}
