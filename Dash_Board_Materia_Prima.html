@@ -173,5 +173,5 @@ $('excelFile').addEventListener('change',async e=>{
  finally{btn.disabled=false;e.target.value='';setTimeout(()=>{btn.textContent='↻ Atualizar dados'},2200)}
 });
 
-$('updated').textContent=new Date().toLocaleString('pt-BR');render();
+$('updated').textContent=new Date().toLocaleString('pt-BR');render();loadPublishedData();
 </script></body></html>
