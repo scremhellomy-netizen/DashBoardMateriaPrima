@@ -1,5 +1,5 @@
 {
-    "updatedAt":  "2026-10-15T13:20:23.5209671-03:00",
+    "updatedAt":  "2026-10-15T13:42:07.4674681-03:00",
     "rows":  [
                  {
                      "ID":  392,
@@ -10,14 +10,14 @@
                      "Quantidade":  "72",
                      "Ação da Solicitação":  "SEPARAÇÃO",
                      "Status Final":  "EM FILA",
-                     "DATA DE ATEND ESTOQUE":  null,
+                     "DATA DE ATEND ESTOQUE":  "2026-10-16T00:00:00",
                      "DATA DE FINALIZAÇÃO":  null,
                      "qtd atendida":  null,
                      "OBS":  "Produção venda.",
                      "COMENTARIOS INTERNOS":  null,
                      "Criado por":  "Vaneide De Souza Maia",
-                     "Modificado":  46310.464733796296,
-                     "Modificado por":  "Vaneide De Souza Maia",
+                     "Modificado":  46310.560115740744,
+                     "Modificado por":  "Larissa Oliveira De Araujo Silva",
                      "Tipo de Item":  "Item",
                      "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
                  },
