@@ -126,7 +126,7 @@ async function loadPublishedData(){
  btn.disabled=true;btn.textContent='↻ Buscando dados...';
  try{
   // Caminho relativo: funciona no GitHub Pages mesmo quando o repositório está em subpasta.
-  const url=new URL('./data/materia_prima.json',window.location.href);
+  const url=new URL('https://raw.githubusercontent.com/scremhellomy-netizen/DashBoardMateriaPrima/main/data/materia_prima.json');
   url.searchParams.set('_',Date.now().toString()); // evita cache de dados antigos
   const response=await fetch(url.toString(),{cache:'no-store'});
   if(!response.ok)throw new Error('A fonte publicada não respondeu (HTTP '+response.status+').');
@@ -173,5 +173,5 @@ $('excelFile').addEventListener('change',async e=>{
  finally{btn.disabled=false;e.target.value='';setTimeout(()=>{btn.textContent='↻ Atualizar dados'},2200)}
 });
 
-$('updated').textContent=new Date().toLocaleString('pt-BR');render();loadPublishedData();
+$('updated').textContent=new Date().toLocaleString('pt-BR');render();
 </script></body></html>
