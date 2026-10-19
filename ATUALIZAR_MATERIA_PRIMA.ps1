@@ -4,13 +4,14 @@
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ExcelPath = Join-Path $Root 'Query - Dados - Lari.xlsx'
+$IqyPath = Join-Path $Root 'query - Lari - Novas Colunas.iqy'
 $JsonPath = Join-Path $Root 'data\materia_prima.json'
 $HtmlPath = Join-Path $Root 'Dash_Board_Materia_Prima.html'
 $SheetName = 'query - Lari'
 $Remote = 'https://github.com/scremhellomy-netizen/DashBoardMateriaPrima.git'
 $Required = @('ID','Criado','ID ESCALA','Nome Solicitante','Processo Solicitacao','Quantidade','Ação da Solicitação','Status Final','DATA DE ATEND ESTOQUE','DATA DE FINALIZAÇÃO','qtd atendida')
 $DateColumns = @('Criado','DATA DE ATEND ESTOQUE','DATA DE FINALIZAÇÃO')
-$excel = $null; $workbook = $null; $sheet = $null; $range = $null
+$excel = $null; $workbook = $null; $sheet = $null; $range = $null; $snapshot = $null
 function Invoke-Git {
     param([string[]]$Arguments)
     & git @Arguments
@@ -19,7 +20,7 @@ function Invoke-Git {
 try {
     Set-Location -LiteralPath $Root
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw 'Git não encontrado. Instale Git for Windows.' }
-    if (-not (Test-Path -LiteralPath $ExcelPath)) { throw "Planilha não encontrada: $ExcelPath" }
+    if (-not (Test-Path -LiteralPath $IqyPath)) { throw "Fonte oficial IQY não encontrada: $IqyPath" }
     if (-not (Test-Path -LiteralPath $HtmlPath)) { throw "HTML não encontrado: $HtmlPath" }
     New-Item -ItemType Directory -Path (Split-Path $JsonPath) -Force | Out-Null
 
@@ -36,38 +37,46 @@ try {
     $branch = (& git branch --show-current).Trim()
     if ($branch -ne 'main') { throw "Branch inesperada: $branch (esperado main)." }
 
-    Write-Host 'Abrindo a planilha e atualizando as consultas...' -ForegroundColor Cyan
+    Write-Host 'Consultando a NOVA fonte oficial SharePoint (.iqy)...' -ForegroundColor Cyan
     $excel = New-Object -ComObject Excel.Application
-    $excel.Visible = $false; $excel.DisplayAlerts = $false
-    $workbook = $excel.Workbooks.Open($ExcelPath,0,$false)
-    # Quando suportado, desativa atualização em segundo plano para aguardar o término real.
-    foreach ($connection in $workbook.Connections) {
-        try { $connection.OLEDBConnection.BackgroundQuery = $false } catch { }
-        try { $connection.ODBCConnection.BackgroundQuery = $false } catch { }
-    }
-    $workbook.RefreshAll()
+    $excel.Visible = $true
+    $excel.DisplayAlerts = $false
+    # O arquivo IQY é a fonte primária. A planilha XLSX será apenas uma cópia local dos dados retornados.
+    # Na primeira execução, o Excel pode solicitar login/permissão para acessar o SharePoint.
+    $workbook = $excel.Workbooks.Open($IqyPath,0,$true)
+    if ($null -eq $workbook) { throw 'Excel não abriu a conexão IQY.' }
+    try { $workbook.RefreshAll() } catch { }
     $deadline = (Get-Date).AddMinutes(10)
     do {
         try { $excel.CalculateUntilAsyncQueriesDone() } catch { }
         Start-Sleep -Seconds 2
         $busy = $false
-        try { if ($excel.CalculationState -ne 0) { $busy = $true } } catch { }
         foreach ($connection in $workbook.Connections) {
             try { if ($connection.OLEDBConnection.Refreshing) { $busy = $true } } catch { }
             try { if ($connection.ODBCConnection.Refreshing) { $busy = $true } } catch { }
         }
-        if ((Get-Date) -gt $deadline) { throw 'Tempo limite de 10 minutos aguardando as consultas. Nada foi publicado.' }
+        foreach ($ws in $workbook.Worksheets) {
+            foreach ($qt in $ws.QueryTables) {
+                try { if ($qt.Refreshing) { $busy = $true } } catch { }
+            }
+        }
+        if ((Get-Date) -gt $deadline) { throw 'Tempo limite aguardando a consulta IQY. Nenhuma alteração foi publicada.' }
     } while ($busy)
-    $workbook.Save()
-
-    foreach ($ws in $workbook.Worksheets) { if ($ws.Name -eq $SheetName) { $sheet = $ws; break } }
-    if ($null -eq $sheet) { throw "A aba '$SheetName' não foi encontrada." }
+    # A primeira aba da pasta aberta pelo IQY é a tabela retornada pela consulta.
+    $sheet = $workbook.Worksheets.Item(1)
     $range = $sheet.UsedRange
-    if ($range.Rows.Count -lt 2) { throw 'A planilha não retornou registros. Publicação cancelada.' }
+    if ($range.Rows.Count -lt 2) { throw 'A nova consulta IQY não retornou registros. Nada foi publicado.' }
     $values = $range.Value2
     $headers = @()
-    for ($c=1; $c -le $range.Columns.Count; $c++) { $headers += [string]$values[1,$c] }
-    foreach ($name in $Required) { if ($headers -notcontains $name) { throw "Coluna obrigatória ausente: $name" } }
+    for ($c=1; $c -le $range.Columns.Count; $c++) { $headers += ([string]$values[1,$c]).Trim() }
+    foreach ($name in $Required) { if ($headers -notcontains $name) { throw "Coluna obrigatória ausente na nova consulta: $name" } }
+    foreach ($name in @('Prioridade','MotivoQtdDiferente','COMENTARIOS INTERNOS')) {
+        if ($headers -notcontains $name) { throw "A consulta IQY não retornou a coluna esperada: $name. Nada foi publicado." }
+    }
+    if ($headers.Count -ne @($headers | Sort-Object -Unique).Count) {
+        throw 'A consulta IQY retornou nomes de colunas duplicados. Nada foi publicado.'
+    }
+    Write-Host "Nova fonte validada: $($range.Rows.Count - 1) linhas e $($headers.Count) colunas." -ForegroundColor Cyan
     $rows = [System.Collections.Generic.List[object]]::new()
     for ($r=2; $r -le $range.Rows.Count; $r++) {
         $obj = [ordered]@{}; $hasId = $false
@@ -87,12 +96,31 @@ try {
     if ($rows.Count -eq 0) { throw 'Nenhum registro com ID. Publicação cancelada.' }
     $unique = @($rows | ForEach-Object { $_.ID } | Sort-Object -Unique).Count
     Write-Host "Consulta concluída: $($rows.Count) registros, $unique IDs únicos." -ForegroundColor Cyan
+    # Cria cópia de leitura local (snapshot) somente após validar todos os dados.
+    # O .iqy continua sendo a única fonte de dados; o .xlsx NÃO alimenta mais o JSON.
+    Write-Host 'Gravando cópia atualizada Query - Dados - Lari.xlsx...' -ForegroundColor Cyan
+    $snapshot = $excel.Workbooks.Add()
+    $snapshotSheet = $snapshot.Worksheets.Item(1)
+    $snapshotSheet.Name = $SheetName
+    $destRange = $snapshotSheet.Range($snapshotSheet.Cells.Item(1,1),$snapshotSheet.Cells.Item($range.Rows.Count,$range.Columns.Count))
+    $destRange.Value2 = $values
+    $snapshotTemp = Join-Path $Root 'Query - Dados - Lari.NOVO.xlsx'
+    if (Test-Path -LiteralPath $snapshotTemp) { Remove-Item -LiteralPath $snapshotTemp -Force }
+    $snapshot.SaveAs($snapshotTemp,51)
+    $snapshot.Close($false); $snapshot = $null
+    # Copia a planilha validada sobre a cópia local existente.
+    # Evita File.Replace com terceiro argumento nulo no Windows PowerShell.
+    Copy-Item -LiteralPath $snapshotTemp -Destination $ExcelPath -Force -ErrorAction Stop
+    Remove-Item -LiteralPath $snapshotTemp -Force -ErrorAction Stop
+
     $payload = [ordered]@{ updatedAt = (Get-Date).ToString('o'); rows = $rows }
     $json = ConvertTo-Json -InputObject $payload -Depth 12
     # Gravação atômica para não deixar JSON truncado em caso de falha.
     $tmp = "$JsonPath.tmp"
     [System.IO.File]::WriteAllText($tmp,$json,[System.Text.UTF8Encoding]::new($false))
-    Move-Item -LiteralPath $tmp -Destination $JsonPath -Force
+    # Substitui também o JSON existente sem usar File.Replace(..., $null).
+    Copy-Item -LiteralPath $tmp -Destination $JsonPath -Force -ErrorAction Stop
+    Remove-Item -LiteralPath $tmp -Force -ErrorAction Stop
 
     Write-Host 'Preparando publicação no GitHub...' -ForegroundColor Cyan
     Invoke-Git -Arguments @('add','--','Dash_Board_Materia_Prima.html','data/materia_prima.json','ATUALIZAR_MATERIA_PRIMA.ps1','INICIAR_ATUALIZACAO.cmd','README.md','.gitignore')
@@ -110,6 +138,7 @@ try {
     Write-Host 'A publicação não foi concluída. Verifique o erro antes de tentar novamente.' -ForegroundColor Yellow
     exit 1
 } finally {
+    if ($snapshot -ne $null) { try { $snapshot.Close($false) } catch {} }
     if ($workbook -ne $null) { try { $workbook.Close($false) } catch {} }
     if ($excel -ne $null) { try { $excel.Quit() } catch {} }
     foreach ($obj in @($range,$sheet,$workbook,$excel)) {
