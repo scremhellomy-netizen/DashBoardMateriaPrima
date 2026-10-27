@@ -188,7 +188,7 @@ async function loadPublishedData({manual=false}={}){
   DATA=rows;
   rebuildFiltersFromData();
   const stamp=payload.updatedAt?new Date(payload.updatedAt):null;
-  $('updated').textContent=(stamp&&!Number.isNaN(stamp.getTime())?stamp.toLocaleString('pt-BR'):new Date().toLocaleString('pt-BR'))+' · '+rows.length+' registros (fonte publicada)';
+  $('updated').textContent=(stamp&&!Number.isNaN(stamp.getTime())?stamp.toLocaleString('pt-BR'):'Data indisponível')+' · '+rows.length+' registros (fonte publicada)';
   render();
   btn.textContent='✓ Dados atualizados';
  }catch(err){

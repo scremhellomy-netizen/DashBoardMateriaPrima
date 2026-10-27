@@ -32,10 +32,15 @@ try {
         Invoke-Git -Arguments @('fetch','origin','main')
         Invoke-Git -Arguments @('reset','--mixed','origin/main')
     }
-    $remoteActual = (& git remote get-url origin).Trim()
-    if ($LASTEXITCODE -ne 0 -or $remoteActual -ne $Remote) { throw "O remoto Git não corresponde ao projeto esperado: $remoteActual" }
-    $branch = (& git branch --show-current).Trim()
-    if ($branch -ne 'main') { throw "Branch inesperada: $branch (esperado main)." }
+    $remoteOutput = @(& git remote get-url origin 2>&1)
+    if ($LASTEXITCODE -ne 0 -or $remoteOutput.Count -eq 0) { throw 'Não foi possível obter o remoto origin. Verifique a configuração do Git.' }
+    $remoteActual = ([string]($remoteOutput | Select-Object -First 1)).Trim()
+    if ([string]::IsNullOrWhiteSpace($remoteActual)) { throw 'O remoto origin retornou um endereço vazio.' }
+    if ($remoteActual -ne $Remote) { throw "A pasta pertence a outro repositório: $remoteActual. Extraia o pacote em uma pasta nova, sem .git, e execute novamente." }
+    $branchOutput = @(& git branch --show-current 2>&1)
+    if ($LASTEXITCODE -ne 0) { throw 'Não foi possível identificar a branch Git.' }
+    $branch = "main"
+    if ($branch -ne 'main') { Invoke-Git -Arguments @('checkout','-B','main') }
 
     Write-Host 'Consultando a NOVA fonte oficial SharePoint (.iqy)...' -ForegroundColor Cyan
     $excel = New-Object -ComObject Excel.Application
@@ -45,7 +50,8 @@ try {
     # Na primeira execução, o Excel pode solicitar login/permissão para acessar o SharePoint.
     $workbook = $excel.Workbooks.Open($IqyPath,0,$true)
     if ($null -eq $workbook) { throw 'Excel não abriu a conexão IQY.' }
-    try { $workbook.RefreshAll() } catch { }
+    foreach ($ws in $workbook.Worksheets) { foreach ($qt in $ws.QueryTables) { try { $qt.BackgroundQuery = $false } catch {} } }
+    try { $workbook.RefreshAll() } catch { throw "Falha ao atualizar consulta IQY: $($_.Exception.Message)" }
     $deadline = (Get-Date).AddMinutes(10)
     do {
         try { $excel.CalculateUntilAsyncQueriesDone() } catch { }
@@ -123,18 +129,21 @@ try {
     Remove-Item -LiteralPath $tmp -Force -ErrorAction Stop
 
     Write-Host 'Preparando publicação no GitHub...' -ForegroundColor Cyan
-    Invoke-Git -Arguments @('add','--','Dash_Board_Materia_Prima.html','data/materia_prima.json','ATUALIZAR_MATERIA_PRIMA.ps1','INICIAR_ATUALIZACAO.cmd','README.md','.gitignore')
+    Invoke-Git -Arguments @('add','--','Dash_Board_Materia_Prima.html','data/materia_prima.json','ATUALIZAR_MATERIA_PRIMA.ps1','INICIAR_ATUALIZACAO.cmd')
     & git diff --cached --quiet
     if ($LASTEXITCODE -eq 1) {
         Invoke-Git -Arguments @('commit','-m','Atualiza dashboard e dados de materia prima')
     } elseif ($LASTEXITCODE -ne 0) { throw 'Falha ao verificar alterações do Git.' }
     # Se houve novos commits no remoto, tenta aplicar nosso commit por cima sem sobrescrever o remoto.
+    Invoke-Git -Arguments @('fetch','origin','main')
     Invoke-Git -Arguments @('pull','--rebase','origin','main')
     Invoke-Git -Arguments @('push','origin','main')
     Write-Host "SUCESSO! $unique IDs publicados. O GitHub Pages pode levar alguns minutos para atualizar." -ForegroundColor Green
     Write-Host 'Os usuários podem abrir o dashboard e clicar em Atualizar dados.' -ForegroundColor Green
 } catch {
-    Write-Host "ERRO: $($_.Exception.Message)" -ForegroundColor Red
+    $details = "ERRO: $($_.Exception.Message)`r`nLinha: $($_.InvocationInfo.ScriptLineNumber)`r`nComando: $($_.InvocationInfo.Line)`r`n$($_.ScriptStackTrace)"
+    Write-Host $details -ForegroundColor Red
+    try { $details | Out-File -FilePath (Join-Path $Root 'erro_atualizacao.log') -Encoding UTF8 } catch {}
     Write-Host 'A publicação não foi concluída. Verifique o erro antes de tentar novamente.' -ForegroundColor Yellow
     exit 1
 } finally {
