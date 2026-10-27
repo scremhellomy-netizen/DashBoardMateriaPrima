@@ -1,5 +1,5 @@
 {
-    "updatedAt":  "2026-10-26T16:44:32.7165049-03:00",
+    "updatedAt":  "2026-10-27T07:53:33.6107042-03:00",
     "rows":  [
                  {
                      "ID":  2,
@@ -7830,6 +7830,50 @@
                      "Criado por":  "Larissa Oliveira De Araujo Silva",
                      "Modificado":  46321.679050925923,
                      "Modificado por":  "Larissa Oliveira De Araujo Silva",
+                     "Tipo de Item":  "Item",
+                     "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
+                 },
+                 {
+                     "ID":  445,
+                     "Criado":  "2026-10-26T19:21:19",
+                     "ID ESCALA":  "183563",
+                     "Nome Solicitante":  "Vilson Barbosa Da Silva",
+                     "Processo Solicitacao":  "TROCA TÉCNICA",
+                     "Prioridade":  "Padrão",
+                     "Quantidade":  "3",
+                     "Ação da Solicitação":  "SEPARAÇÃO",
+                     "Status Final":  "EM FILA",
+                     "DATA DE ATEND ESTOQUE":  null,
+                     "DATA DE FINALIZAÇÃO":  null,
+                     "qtd atendida":  null,
+                     "OBS":  "Para produção de troca técnica na FI",
+                     "MotivoQtdDiferente":  null,
+                     "COMENTARIOS INTERNOS":  null,
+                     "Criado por":  "Vilson Barbosa Da Silva",
+                     "Modificado":  46321.806469907409,
+                     "Modificado por":  "Vilson Barbosa Da Silva",
+                     "Tipo de Item":  "Item",
+                     "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
+                 },
+                 {
+                     "ID":  446,
+                     "Criado":  "2026-10-26T19:27:47",
+                     "ID ESCALA":  "183564",
+                     "Nome Solicitante":  "Vilson Barbosa Da Silva",
+                     "Processo Solicitacao":  "TROCA TÉCNICA",
+                     "Prioridade":  "Padrão",
+                     "Quantidade":  "3",
+                     "Ação da Solicitação":  "SEPARAÇÃO",
+                     "Status Final":  "EM FILA",
+                     "DATA DE ATEND ESTOQUE":  null,
+                     "DATA DE FINALIZAÇÃO":  null,
+                     "qtd atendida":  null,
+                     "OBS":  "Para produção de troca técnica na FI",
+                     "MotivoQtdDiferente":  null,
+                     "COMENTARIOS INTERNOS":  null,
+                     "Criado por":  "Vilson Barbosa Da Silva",
+                     "Modificado":  46321.810960648145,
+                     "Modificado por":  "Vilson Barbosa Da Silva",
                      "Tipo de Item":  "Item",
                      "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
                  }
