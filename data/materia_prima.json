@@ -1,5 +1,5 @@
 {
-    "updatedAt":  "2026-10-30T08:42:49.9442589-03:00",
+    "updatedAt":  "2026-11-03T07:35:54.6085978-03:00",
     "rows":  [
                  {
                      "ID":  2,
@@ -8292,6 +8292,28 @@
                      "Criado por":  "Larissa Oliveira De Araujo Silva",
                      "Modificado":  46324.70826388889,
                      "Modificado por":  "Larissa Oliveira De Araujo Silva",
+                     "Tipo de Item":  "Item",
+                     "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
+                 },
+                 {
+                     "ID":  467,
+                     "Criado":  "2026-10-30T15:54:35",
+                     "ID ESCALA":  "185284",
+                     "Nome Solicitante":  "Vaneide De Souza Maia",
+                     "Processo Solicitacao":  "REVISÃO MOBILE",
+                     "Prioridade":  "Padrão",
+                     "Quantidade":  "2",
+                     "Ação da Solicitação":  "SEPARAÇÃO",
+                     "Status Final":  "EM FILA",
+                     "DATA DE ATEND ESTOQUE":  null,
+                     "DATA DE FINALIZAÇÃO":  null,
+                     "qtd atendida":  null,
+                     "OBS":  "Os itens destinados à revisão de laboratório foram produzidos sem aplicação de película e estão direcionados para vendas digitais.",
+                     "MotivoQtdDiferente":  null,
+                     "COMENTARIOS INTERNOS":  null,
+                     "Criado por":  "Vaneide De Souza Maia",
+                     "Modificado":  46325.662905092591,
+                     "Modificado por":  "Vaneide De Souza Maia",
                      "Tipo de Item":  "Item",
                      "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
                  }
