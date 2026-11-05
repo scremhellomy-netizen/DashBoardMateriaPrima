@@ -1,5 +1,5 @@
 {
-    "updatedAt":  "2026-11-04T06:52:34.8632567-03:00",
+    "updatedAt":  "2026-11-05T07:13:19.0123413-03:00",
     "rows":  [
                  {
                      "ID":  2,
@@ -8445,6 +8445,28 @@
                      "COMENTARIOS INTERNOS":  null,
                      "Criado por":  "Vaneide De Souza Maia",
                      "Modificado":  46329.687199074076,
+                     "Modificado por":  "Larissa Oliveira De Araujo Silva",
+                     "Tipo de Item":  "Item",
+                     "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
+                 },
+                 {
+                     "ID":  474,
+                     "Criado":  "2026-11-04T11:07:20",
+                     "ID ESCALA":  "185832",
+                     "Nome Solicitante":  "Weslley Marques Santos",
+                     "Processo Solicitacao":  "DESMEMBRAMENTO",
+                     "Prioridade":  "Emergencial",
+                     "Quantidade":  "53",
+                     "Ação da Solicitação":  "SEPARAÇÃO",
+                     "Status Final":  "EM FILA",
+                     "DATA DE ATEND ESTOQUE":  "2026-11-04T00:00:00",
+                     "DATA DE FINALIZAÇÃO":  null,
+                     "qtd atendida":  null,
+                     "OBS":  "EQUIPAMENTOS DESTINADO AO DESMEMBRAMENTO",
+                     "MotivoQtdDiferente":  null,
+                     "COMENTARIOS INTERNOS":  null,
+                     "Criado por":  "Weslley Marques Santos",
+                     "Modificado":  46330.466284722221,
                      "Modificado por":  "Larissa Oliveira De Araujo Silva",
                      "Tipo de Item":  "Item",
                      "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
