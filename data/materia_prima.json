@@ -1,5 +1,5 @@
 {
-    "updatedAt":  "2026-11-09T14:41:39.9573714-03:00",
+    "updatedAt":  "2026-11-10T07:59:45.0663682-03:00",
     "rows":  [
                  {
                      "ID":  2,
@@ -8810,15 +8810,15 @@
                      "Prioridade":  "Emergencial",
                      "Quantidade":  "2",
                      "Ação da Solicitação":  "SEPARAÇÃO",
-                     "Status Final":  "EM FILA",
+                     "Status Final":  "FINALIZADO",
                      "DATA DE ATEND ESTOQUE":  "2026-11-09T00:00:00",
-                     "DATA DE FINALIZAÇÃO":  null,
-                     "qtd atendida":  null,
+                     "DATA DE FINALIZAÇÃO":  "2026-11-09T00:00:00",
+                     "qtd atendida":  "2",
                      "OBS":  "Para produção na Fábrica",
-                     "MotivoQtdDiferente":  null,
+                     "MotivoQtdDiferente":  "Sem divergências",
                      "COMENTARIOS INTERNOS":  null,
                      "Criado por":  "Vilson Barbosa Da Silva",
-                     "Modificado":  46335.500543981485,
+                     "Modificado":  46335.621516203704,
                      "Modificado por":  "Larissa Oliveira De Araujo Silva",
                      "Tipo de Item":  "Item",
                      "Caminho":  "sites/EstoqueSAAS559/Lists/ControleSolicitacoesMP"
